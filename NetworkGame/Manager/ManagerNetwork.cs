@@ -140,5 +140,14 @@ namespace NetworkGame
             _client.SendMessage(outmsg, NetDeliveryMethod.ReliableOrdered);
         }
 
+        public void SendInput(Microsoft.Xna.Framework.Input.Keys keys)
+        {
+            var outmessage = _client.CreateMessage();
+            outmessage.Write((byte)PacketType.Input);
+            outmessage.Write((byte)keys);
+            outmessage.Write(Player.Name);
+            _client.SendMessage(outmessage, NetDeliveryMethod.ReliableOrdered);
+        }
+
     }
 }

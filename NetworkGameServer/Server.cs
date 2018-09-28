@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Sockets;
 using Lidgren.Network;
 using NetworkGameLibrary;
+using Microsoft.Xna.Framework.Input;
 
 namespace NetworkGameServer
 {
@@ -187,6 +188,29 @@ namespace NetworkGameServer
             }
             _netPeer.SendMessage(outmessage, connectedClients, NetDeliveryMethod.ReliableOrdered, 0);
 
+        }
+
+        private void Inputs(NetIncomingMessage inc)
+        {
+            Console.WriteLine("Received new input");
+            var key = (Keys)inc.ReadByte();
+
+            switch (key)
+            {
+                case Keys.Down:
+                    _players.Find(x => x.connection == inc.SenderConnection).yPosition++;
+                    break;
+                case Keys.Up:
+                    _players.Find(x => x.connection == inc.SenderConnection).yPosition--;
+                    break;
+                case Keys.Left:
+                    _players.Find(x => x.connection == inc.SenderConnection).xPosition--;
+                    break;
+                case Keys.Right:
+                    _players.Find(x => x.connection == inc.SenderConnection).xPosition++;
+                    break;
+            }
+            SendNewPlayer(_players.Find(x=>x.connection == inc.SenderConnection), inc);
         }
     }
 }
