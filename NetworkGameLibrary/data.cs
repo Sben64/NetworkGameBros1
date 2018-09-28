@@ -7,7 +7,6 @@
         Login,
         NewPlayer,
         AllPlayers,
-        PingPong,
         Input,
     }
 }

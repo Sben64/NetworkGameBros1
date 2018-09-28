@@ -91,7 +91,7 @@ namespace NetworkGame
             if (ManagerNetwork.isConnected)
             {
 
-                spriteBatch.Draw(_texture, new Rectangle(_networkConnection.Player.xPosition, _networkConnection.Player.yPosition, 50, 50), Color.White);
+                spriteBatch.Draw(_texture, new Rectangle(_networkConnection.Player.xPosition, _networkConnection.Player.yPosition, _texture.Width, _texture.Height), Color.White);
                 foreach (var other in _networkConnection.OtherPlayers)
                 {
                     spriteBatch.Draw(_texture, new Rectangle(other.xPosition, other.yPosition, 50, 50), Color.White);

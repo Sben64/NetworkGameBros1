@@ -14,7 +14,6 @@ namespace NetworkGame
         public List<Player> OtherPlayers { get; set; }
         public static bool isConnected = false;
         public bool Active { get; set; }
-        public string ff;
         public ManagerNetwork()
         {
             OtherPlayers = new List<Player>();
@@ -104,6 +103,7 @@ namespace NetworkGame
                         inc.ReadAllProperties(playerDc);
                         OtherPlayers.Remove(OtherPlayers.Find(x => x.Name == playerDc.Name));
                         break;
+
                     default:
                         break;
                 }
