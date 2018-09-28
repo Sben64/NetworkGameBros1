@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -100,6 +101,12 @@ namespace NetworkGame
             spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+
+        protected override void OnExiting(object sender, EventArgs args)
+        {
+            _networkConnection.SendDisconnect();
+            base.OnExiting(sender, args);
         }
     }
 }
