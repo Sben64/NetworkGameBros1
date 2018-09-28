@@ -132,8 +132,12 @@ namespace NetworkGame
             }
         }
 
-        public void Draw(SpriteBatch sprite)
-        { 
+        public void SendDisconnect()
+        {
+            var outmsg = _client.CreateMessage();
+            outmsg.Write((byte)PacketType.Disconnected);
+            outmsg.WriteAllProperties(Player);
+            _client.SendMessage(outmsg, NetDeliveryMethod.ReliableOrdered);
         }
 
     }

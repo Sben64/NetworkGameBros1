@@ -40,10 +40,26 @@ namespace NetworkGameServer
                             ConnectionApproval(inc);
                             break;
                         case NetIncomingMessageType.Data:
-                            if (inc.ReadByte() == (byte)PacketType.AcceptedConnection)
+                            var type = inc.ReadByte();
+                            if (type == (byte)PacketType.AcceptedConnection)
                             {
                                 ConnectionAccepted(inc);
                                 SendFullPlayerList();
+                            }
+                            else if (type == (byte)PacketType.Disconnected)
+                            {
+                                var player = new Player();
+                                inc.ReadAllProperties(player);
+
+                                var outmsg = _netPeer.CreateMessage();
+                                outmsg.Write((byte)PacketType.Disconnected);
+                                outmsg.WriteAllProperties(_players.Find(x => x.Name == player.Name));
+
+                                _netPeer.SendMessage(outmsg, connectedClients, NetDeliveryMethod.ReliableOrdered, 0);
+                                
+                                //Enleve la connection et le joueur des listes
+                                connectedClients.Remove(inc.SenderConnection);
+                                _players.Remove(_players.Find(x => x.Name == player.Name));
                             }
                             break;
                         case NetIncomingMessageType.StatusChanged:
@@ -51,12 +67,12 @@ namespace NetworkGameServer
                             if (inc.SenderConnection.Status == NetConnectionStatus.Disconnected)
                             {
                                 var outmsg = _netPeer.CreateMessage();
-                                outmsg.Write((byte)PacketType.Disconnected);
+                                
                                 foreach (var item in connectedClients)
                                 {
                                     if (item.Status == NetConnectionStatus.Disconnected)
                                     {
-                                        
+                                        outmsg.Write((byte)PacketType.Disconnected);
                                         outmsg.WriteAllProperties(_players.Find(x => x.connection == item));
                                     }
                                 }
@@ -79,10 +95,10 @@ namespace NetworkGameServer
                      * 
                      * 4) Continuer
                      */
-                    
+
 
                 }
-                
+
             }
         }
 
