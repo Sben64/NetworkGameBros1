@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Lidgren.Network;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using NetworkGameLibrary;
 using NetworkGame.Manager;
@@ -128,8 +127,23 @@ namespace NetworkGame
                     case PacketType.Input:
                         var playerPos = new Player();
                         inc.ReadAllProperties(playerPos);
-                        OtherPlayers.Find(x => x.Name == playerPos.Name).xPosition = playerPos.xPosition;
-                        OtherPlayers.Find(x => x.Name == playerPos.Name).yPosition = playerPos.yPosition;
+                        if (Player.Name == playerPos.Name)
+                        {
+                            Player.xPosition = playerPos.xPosition;
+                            Player.yPosition = playerPos.yPosition;
+                        }
+                        else if(OtherPlayers.Count > 0)
+                        {
+                            try
+                            {
+                                OtherPlayers.Find(x => x.Name == playerPos.Name).xPosition = playerPos.xPosition;
+                                OtherPlayers.Find(x => x.Name == playerPos.Name).yPosition = playerPos.yPosition;
+                            }
+                            catch
+                            {
+
+                            }
+                        }
                         break;
 
                     default:
@@ -171,26 +185,26 @@ namespace NetworkGame
 
 
        
-        public void getInput()
-        {
-            if (Keyboard.GetState().IsKeyDown(down))
-            {
-                Player.yPosition++;
-            }
-            if (Keyboard.GetState().IsKeyDown(up))
-            {
-                Player.yPosition--;
-            }
-            if (Keyboard.GetState().IsKeyDown(right))
-            {
-                Player.xPosition++;
-            }
-            if (Keyboard.GetState().IsKeyDown(left))
-            {
-                Player.xPosition--;
-            }
-        }
-        public void SendInput(Microsoft.Xna.Framework.Input.Keys keys)
+        //public void getInput()
+        //{
+        //    if (Keyboard.GetState().IsKeyDown(down))
+        //    {
+        //        Player.yPosition++;
+        //    }
+        //    if (Keyboard.GetState().IsKeyDown(up))
+        //    {
+        //        Player.yPosition--;
+        //    }
+        //    if (Keyboard.GetState().IsKeyDown(right))
+        //    {
+        //        Player.xPosition++;
+        //    }
+        //    if (Keyboard.GetState().IsKeyDown(left))
+        //    {
+        //        Player.xPosition--;
+        //    }
+        //}
+        public void SendInput(Keys keys)
         {
             var outmessage = _client.CreateMessage();
             outmessage.Write((byte)PacketType.Input);

@@ -62,14 +62,17 @@ namespace NetworkGameServer
                                 connectedClients.Remove(inc.SenderConnection);
                                 _players.Remove(_players.Find(x => x.Name == player.Name));
                             }
+                            else if (type == (byte)PacketType.Input)
+                            {
+                                Inputs(inc);
+                            }
                             break;
                         case NetIncomingMessageType.StatusChanged:
                             Console.WriteLine(inc.SenderConnection.ToString() + " changed : " + inc.SenderConnection.Status);
                             //Si une connection est fermé sans envoyer un packet de type disconnected alors on le détecte et on l'enleve de la liste
                             if (inc.SenderConnection.Status == NetConnectionStatus.Disconnected)
                             {
-                                var outmsg = _netPeer.CreateMessage();
-
+                                
                                 foreach (var item in connectedClients)
                                 {
                                     if (item.Status == NetConnectionStatus.Disconnected)
@@ -163,7 +166,7 @@ namespace NetworkGameServer
             var outmessage = _netPeer.CreateMessage();
             outmessage.Write((byte)PacketType.Input);
             outmessage.WriteAllProperties(player);
-            _netPeer.SendMessage(outmessage, inc.SenderConnection,NetDeliveryMethod.ReliableOrdered);
+            _netPeer.SendMessage(outmessage, connectedClients,NetDeliveryMethod.ReliableOrdered,0);
         }
 
         private void SendNewPlayer(Player player, NetIncomingMessage inc)
