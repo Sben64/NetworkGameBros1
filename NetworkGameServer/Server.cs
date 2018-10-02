@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Sockets;
 using Lidgren.Network;
 using NetworkGameLibrary;
+using Microsoft.Xna.Framework.Input;
 
 namespace NetworkGameServer
 {
@@ -66,7 +67,9 @@ namespace NetworkGameServer
                             Console.WriteLine(inc.SenderConnection.ToString() + " changed : " + inc.SenderConnection.Status);
                             //Si une connection est fermé sans envoyer un packet de type disconnected alors on le détecte et on l'enleve de la liste
                             if (inc.SenderConnection.Status == NetConnectionStatus.Disconnected)
-                            {                                                                                                                                                                                                                                                                                
+                            {
+                                var outmsg = _netPeer.CreateMessage();
+
                                 foreach (var item in connectedClients)
                                 {
                                     if (item.Status == NetConnectionStatus.Disconnected)
@@ -141,6 +144,7 @@ namespace NetworkGameServer
             }
         }
 
+
         private Player CreatePlayer(NetIncomingMessage inc)
         {
             var random = new Random();
@@ -152,6 +156,14 @@ namespace NetworkGameServer
                 yPosition = random.Next(0, 420)
             };
             return player;
+        }
+        private void SendNewPosition(Player player, NetIncomingMessage inc)
+        {
+            Console.WriteLine("Send player position");
+            var outmessage = _netPeer.CreateMessage();
+            outmessage.Write((byte)PacketType.Input);
+            outmessage.WriteAllProperties(player);
+            _netPeer.SendMessage(outmessage, inc.SenderConnection,NetDeliveryMethod.ReliableOrdered);
         }
 
         private void SendNewPlayer(Player player, NetIncomingMessage inc)
@@ -177,6 +189,33 @@ namespace NetworkGameServer
             }
             _netPeer.SendMessage(outmessage, connectedClients, NetDeliveryMethod.ReliableOrdered, 0);
 
+        }
+
+        private void Inputs(NetIncomingMessage inc)
+        {
+            Console.WriteLine("Received new input");
+            var key = (Keys)inc.ReadByte();
+
+            switch (key)
+            {
+                case Keys.Down:
+                    _players.Find(x => x.connection == inc.SenderConnection).yPosition++;
+                    Console.WriteLine(key.ToString());
+                    break;
+                case Keys.Up:
+                    _players.Find(x => x.connection == inc.SenderConnection).yPosition--;
+                    Console.WriteLine(key.ToString());
+                    break;
+                case Keys.Left:
+                    _players.Find(x => x.connection == inc.SenderConnection).xPosition--;
+                    Console.WriteLine(key.ToString());
+                    break;
+                case Keys.Right:
+                    _players.Find(x => x.connection == inc.SenderConnection).xPosition++;
+                    Console.WriteLine(key.ToString());
+                    break;
+            }
+            SendNewPosition(_players.Find(x => x.connection == inc.SenderConnection), inc);
         }
     }
 }

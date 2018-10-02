@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Lidgren.Network;
+using Microsoft.Xna.Framework;
+
 namespace NetworkGameLibrary
 {
     public class Player
@@ -14,7 +16,7 @@ namespace NetworkGameLibrary
 
         public int xPosition { get; set; }
         public int yPosition { get; set; }
-
+         
 
         public Player(string name, int xPos, int yPos)
         {

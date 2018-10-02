@@ -13,6 +13,7 @@ namespace NetworkGame
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         private ManagerNetwork _networkConnection;
+        private Manager.ManagerInput _input;
         private Texture2D _texture;
         Color _color;
         public Game1()
@@ -20,6 +21,7 @@ namespace NetworkGame
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             _networkConnection = new ManagerNetwork();
+            _input = new Manager.ManagerInput(_networkConnection);
         }
 
         /// <summary>
@@ -78,6 +80,7 @@ namespace NetworkGame
             // TODO: Add your update logic here
             _networkConnection.getInput();
             _networkConnection.Update();
+            _input.Update();
             base.Update(gameTime);
         }
 
@@ -92,7 +95,8 @@ namespace NetworkGame
             spriteBatch.Begin();
             if (ManagerNetwork.isConnected)
             {
-                spriteBatch.Draw(_texture, new Rectangle(_networkConnection.Player.xPosition, _networkConnection.Player.yPosition, 50, 50), Color.White);
+
+                spriteBatch.Draw(_texture, new Rectangle(_networkConnection.Player.xPosition, _networkConnection.Player.yPosition, _texture.Width, _texture.Height), Color.White);
                 foreach (var other in _networkConnection.OtherPlayers)
                 {
                     spriteBatch.Draw(_texture, new Rectangle(other.xPosition, other.yPosition, 50, 50), Color.White);

@@ -5,6 +5,7 @@ using Lidgren.Network;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using NetworkGameLibrary;
+using NetworkGame.Manager;
 
 namespace NetworkGame
 {
@@ -25,6 +26,7 @@ namespace NetworkGame
         Keys left = Keys.Left;
 
 
+        ManagerInput _input;
         public ManagerNetwork()
         {
             OtherPlayers = new List<Player>();
@@ -41,6 +43,7 @@ namespace NetworkGame
             outmsg.Write((byte)PacketType.Login);
             outmsg.Write(Player.Name);
             _client.Connect("localhost", 63763, outmsg);
+            _input = new ManagerInput(this);
 
             return EsablishInfo();
         }
@@ -122,6 +125,13 @@ namespace NetworkGame
                         inc.ReadAllProperties(playerDc);
                         OtherPlayers.Remove(OtherPlayers.Find(x => x.Name == playerDc.Name));
                         break;
+                    case PacketType.Input:
+                        var playerPos = new Player();
+                        inc.ReadAllProperties(playerPos);
+                        OtherPlayers.Find(x => x.Name == playerPos.Name).xPosition = playerPos.xPosition;
+                        OtherPlayers.Find(x => x.Name == playerPos.Name).yPosition = playerPos.yPosition;
+                        break;
+
                     default:
                         break;
                 }
@@ -180,5 +190,14 @@ namespace NetworkGame
                 Player.xPosition--;
             }
         }
+        public void SendInput(Microsoft.Xna.Framework.Input.Keys keys)
+        {
+            var outmessage = _client.CreateMessage();
+            outmessage.Write((byte)PacketType.Input);
+            outmessage.Write((byte)keys);
+            outmessage.Write(Player.Name);
+            _client.SendMessage(outmessage, NetDeliveryMethod.ReliableOrdered);
+        }
+
     }
 }
