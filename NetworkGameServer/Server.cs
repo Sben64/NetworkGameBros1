@@ -57,7 +57,7 @@ namespace NetworkGameServer
                                 outmsg.WriteAllProperties(_players.Find(x => x.Name == player.Name));
 
                                 _netPeer.SendMessage(outmsg, connectedClients, NetDeliveryMethod.ReliableOrdered, 0);
-                                
+
                                 //Enleve la connection et le joueur des listes
                                 connectedClients.Remove(inc.SenderConnection);
                                 _players.Remove(_players.Find(x => x.Name == player.Name));
@@ -68,7 +68,7 @@ namespace NetworkGameServer
                             if (inc.SenderConnection.Status == NetConnectionStatus.Disconnected)
                             {
                                 var outmsg = _netPeer.CreateMessage();
-                                
+
                                 foreach (var item in connectedClients)
                                 {
                                     if (item.Status == NetConnectionStatus.Disconnected)
@@ -152,6 +152,7 @@ namespace NetworkGameServer
             }
         }
 
+
         private Player CreatePlayer(NetIncomingMessage inc)
         {
             var random = new Random();
@@ -163,6 +164,14 @@ namespace NetworkGameServer
                 yPosition = random.Next(0, 420)
             };
             return player;
+        }
+        private void SendNewPosition(Player player, NetIncomingMessage inc)
+        {
+            Console.WriteLine("Send player position");
+            var outmessage = _netPeer.CreateMessage();
+            outmessage.Write((byte)PacketType.Input);
+            outmessage.WriteAllProperties(player);
+            _netPeer.SendMessage(outmessage, inc.SenderConnection,NetDeliveryMethod.ReliableOrdered);
         }
 
         private void SendNewPlayer(Player player, NetIncomingMessage inc)
@@ -199,18 +208,22 @@ namespace NetworkGameServer
             {
                 case Keys.Down:
                     _players.Find(x => x.connection == inc.SenderConnection).yPosition++;
+                    Console.WriteLine(key.ToString());
                     break;
                 case Keys.Up:
                     _players.Find(x => x.connection == inc.SenderConnection).yPosition--;
+                    Console.WriteLine(key.ToString());
                     break;
                 case Keys.Left:
                     _players.Find(x => x.connection == inc.SenderConnection).xPosition--;
+                    Console.WriteLine(key.ToString());
                     break;
                 case Keys.Right:
                     _players.Find(x => x.connection == inc.SenderConnection).xPosition++;
+                    Console.WriteLine(key.ToString());
                     break;
             }
-            SendNewPlayer(_players.Find(x=>x.connection == inc.SenderConnection), inc);
+            SendNewPosition(_players.Find(x => x.connection == inc.SenderConnection), inc);
         }
     }
 }

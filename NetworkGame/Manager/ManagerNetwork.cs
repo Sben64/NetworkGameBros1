@@ -4,6 +4,7 @@ using System.Linq;
 using Lidgren.Network;
 using Microsoft.Xna.Framework.Graphics;
 using NetworkGameLibrary;
+using NetworkGame.Manager;
 
 namespace NetworkGame
 {
@@ -14,6 +15,7 @@ namespace NetworkGame
         public List<Player> OtherPlayers { get; set; }
         public static bool isConnected = false;
         public bool Active { get; set; }
+        ManagerInput _input;
         public ManagerNetwork()
         {
             OtherPlayers = new List<Player>();
@@ -30,6 +32,7 @@ namespace NetworkGame
             outmsg.Write((byte)PacketType.Login);
             outmsg.Write(Player.Name);
             _client.Connect("localhost", 63763, outmsg);
+            _input = new ManagerInput(this);
 
             return EsablishInfo();
         }
@@ -102,6 +105,12 @@ namespace NetworkGame
                         var playerDc = new Player();
                         inc.ReadAllProperties(playerDc);
                         OtherPlayers.Remove(OtherPlayers.Find(x => x.Name == playerDc.Name));
+                        break;
+                    case PacketType.Input:
+                        var playerPos = new Player();
+                        inc.ReadAllProperties(playerPos);
+                        OtherPlayers.Find(x => x.Name == playerPos.Name).xPosition = playerPos.xPosition;
+                        OtherPlayers.Find(x => x.Name == playerPos.Name).yPosition = playerPos.yPosition;
                         break;
 
                     default:

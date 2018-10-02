@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Input;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 
 namespace NetworkGame.Manager
 {
@@ -10,7 +11,7 @@ namespace NetworkGame.Manager
             ManagerNetwork = manager;
         }
 
-        public void Update(double Gametime)
+        public void Update()
         {
             var state = Keyboard.GetState();
             CheckKeyState(Keys.Down, state);

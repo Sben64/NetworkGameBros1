@@ -13,6 +13,7 @@ namespace NetworkGame
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         private ManagerNetwork _networkConnection;
+        private Manager.ManagerInput _input;
         private Texture2D _texture;
 
         Color _color;
@@ -21,6 +22,7 @@ namespace NetworkGame
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             _networkConnection = new ManagerNetwork();
+            _input = new Manager.ManagerInput(_networkConnection);
         }
 
         /// <summary>
@@ -77,6 +79,7 @@ namespace NetworkGame
 
             // TODO: Add your update logic here
             _networkConnection.Update();
+            _input.Update();
             base.Update(gameTime);
         }
 
