@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Lidgren.Network;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using NetworkGameLibrary;
 
 namespace NetworkGame
@@ -14,7 +15,16 @@ namespace NetworkGame
         public List<Player> OtherPlayers { get; set; }
         public static bool isConnected = false;
         public bool Active { get; set; }
-        public string ff;
+
+        /// <summary>
+        /// Inputs
+        /// </summary>
+        Keys down = Keys.Down;
+        Keys up = Keys.Up;
+        Keys right = Keys.Right;
+        Keys left = Keys.Left;
+
+
         public ManagerNetwork()
         {
             OtherPlayers = new List<Player>();
@@ -81,7 +91,6 @@ namespace NetworkGame
                 switch (packageType)
                 {
                     case PacketType.AcceptedConnection:
-                        Console.WriteLine(inc.ReadBoolean());
                         break;
                     case PacketType.Login:
                         if (inc.ReadBoolean())
@@ -91,15 +100,24 @@ namespace NetworkGame
                             ReceiveAllPlayers(inc);
                         }
                         break;
+                        //Recois un Packet de type nouveau joueur.
                     case PacketType.NewPlayer:
+                        //Créé l'instance du nouveau joueur
                         var player = new Player();
+                        //assigne les propriétés reçu au nouveau joueur
                         inc.ReadAllProperties(player);
-                        OtherPlayers.Add(player);
+                        //Si le nom du nouveau joueur est différent du nom du joueur alors on le rajoute à la liste
+                        if (player.Name != Player.Name)
+                        {
+                            OtherPlayers.Add(player);
+                        }
                         break;
                     case PacketType.AllPlayers:
+                        //Reçois tous les joueurs déjà présent.
                         ReceiveAllPlayers(inc);
                         break;
                     case PacketType.Disconnected:
+                        //Quand un joueur se déconnecte on lui envoie les propriétés du joueur déconnecter et on le supprime de la liste
                         var playerDc = new Player();
                         inc.ReadAllProperties(playerDc);
                         OtherPlayers.Remove(OtherPlayers.Find(x => x.Name == playerDc.Name));
@@ -138,7 +156,29 @@ namespace NetworkGame
             outmsg.Write((byte)PacketType.Disconnected);
             outmsg.WriteAllProperties(Player);
             _client.SendMessage(outmsg, NetDeliveryMethod.ReliableOrdered);
+            _client.Disconnect("Byebyelesgars");
         }
 
+
+       
+        public void getInput()
+        {
+            if (Keyboard.GetState().IsKeyDown(down))
+            {
+                Player.yPosition++;
+            }
+            if (Keyboard.GetState().IsKeyDown(up))
+            {
+                Player.yPosition--;
+            }
+            if (Keyboard.GetState().IsKeyDown(right))
+            {
+                Player.xPosition++;
+            }
+            if (Keyboard.GetState().IsKeyDown(left))
+            {
+                Player.xPosition--;
+            }
+        }
     }
 }

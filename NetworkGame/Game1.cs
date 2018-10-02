@@ -14,7 +14,6 @@ namespace NetworkGame
         SpriteBatch spriteBatch;
         private ManagerNetwork _networkConnection;
         private Texture2D _texture;
-
         Color _color;
         public Game1()
         {
@@ -41,6 +40,7 @@ namespace NetworkGame
             {
                 _color = Color.Yellow;
             }
+
             base.Initialize();
         }
 
@@ -76,6 +76,7 @@ namespace NetworkGame
                 Exit();
 
             // TODO: Add your update logic here
+            _networkConnection.getInput();
             _networkConnection.Update();
             base.Update(gameTime);
         }
@@ -91,7 +92,6 @@ namespace NetworkGame
             spriteBatch.Begin();
             if (ManagerNetwork.isConnected)
             {
-
                 spriteBatch.Draw(_texture, new Rectangle(_networkConnection.Player.xPosition, _networkConnection.Player.yPosition, 50, 50), Color.White);
                 foreach (var other in _networkConnection.OtherPlayers)
                 {

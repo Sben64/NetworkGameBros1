@@ -10,7 +10,6 @@ namespace NetworkGameServer
     {
         private List<Player> _players;
         private NetPeerConfiguration _config;
-        //private NetServer _netPeer;
         private List<NetConnection> connectedClients;
         private NetPeer _netPeer;
         public Server()
@@ -19,13 +18,11 @@ namespace NetworkGameServer
             connectedClients = new List<NetConnection>();
             _config = new NetPeerConfiguration("ng") { Port = 63763 };
             _config.EnableMessageType(NetIncomingMessageType.ConnectionApproval);
-            //_netPeer = new NetServer(_config);
             _netPeer = new NetServer(_config);
         }
 
         public void Run()
         {
-            //_server.Start();
             _netPeer.Start();
             NetIncomingMessage inc;
             Console.WriteLine("Server started...");
@@ -46,17 +43,20 @@ namespace NetworkGameServer
                                 ConnectionAccepted(inc);
                                 SendFullPlayerList();
                             }
+                            //Quand un joueur se déconnecte il envoie le Packet 'Disconnect'
                             else if (type == (byte)PacketType.Disconnected)
                             {
+                                //On créer un nouveau joueur
                                 var player = new Player();
+                                //On assigne les propriétés au nouveau joueur
                                 inc.ReadAllProperties(player);
-
+                                //On créé un nouveau message
                                 var outmsg = _netPeer.CreateMessage();
                                 outmsg.Write((byte)PacketType.Disconnected);
                                 outmsg.WriteAllProperties(_players.Find(x => x.Name == player.Name));
 
                                 _netPeer.SendMessage(outmsg, connectedClients, NetDeliveryMethod.ReliableOrdered, 0);
-                                
+
                                 //Enleve la connection et le joueur des listes
                                 connectedClients.Remove(inc.SenderConnection);
                                 _players.Remove(_players.Find(x => x.Name == player.Name));
@@ -64,19 +64,19 @@ namespace NetworkGameServer
                             break;
                         case NetIncomingMessageType.StatusChanged:
                             Console.WriteLine(inc.SenderConnection.ToString() + " changed : " + inc.SenderConnection.Status);
+                            //Si une connection est fermé sans envoyer un packet de type disconnected alors on le détecte et on l'enleve de la liste
                             if (inc.SenderConnection.Status == NetConnectionStatus.Disconnected)
-                            {
-                                var outmsg = _netPeer.CreateMessage();
-                                
+                            {                                                                                                                                                                                                                                                                                
                                 foreach (var item in connectedClients)
                                 {
                                     if (item.Status == NetConnectionStatus.Disconnected)
                                     {
+                                        var outmsg = _netPeer.CreateMessage();
                                         outmsg.Write((byte)PacketType.Disconnected);
                                         outmsg.WriteAllProperties(_players.Find(x => x.connection == item));
+                                        _netPeer.SendMessage(outmsg, connectedClients, NetDeliveryMethod.ReliableOrdered, 0);
                                     }
                                 }
-                                _netPeer.SendMessage(outmsg, connectedClients, NetDeliveryMethod.ReliableOrdered, 0);
                                 connectedClients.Remove(inc.SenderConnection);
                                 _players.Remove(_players.Find(x => x.connection == inc.SenderConnection));
                             }
@@ -85,16 +85,6 @@ namespace NetworkGameServer
                             Console.WriteLine("What is happening ??");
                             break;
                     }
-                    /*
-                     * Que faire quand un client se disconnecte : 
-                     * 1) Détecter
-                     *
-                     * 2) Envoie de l'information aux clients
-                     * 
-                     * 3) Supprimer le client de la liste
-                     * 
-                     * 4) Continuer
-                     */
 
 
                 }
