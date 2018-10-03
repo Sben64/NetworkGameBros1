@@ -77,10 +77,8 @@ namespace NetworkGame
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
-            //_networkConnection.getInput();
+            // TODO: Add your update logic here            
             _networkConnection.Update();
-            _input.getInput();
             _input.Update();
             base.Update(gameTime);
         }
@@ -96,7 +94,6 @@ namespace NetworkGame
             spriteBatch.Begin();
             if (ManagerNetwork.isConnected)
             {
-
                 spriteBatch.Draw(_texture, new Rectangle(_networkConnection.Player.xPosition, _networkConnection.Player.yPosition, _texture.Width, _texture.Height), Color.White);
                 foreach (var other in _networkConnection.OtherPlayers)
                 {
