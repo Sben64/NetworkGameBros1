@@ -12,6 +12,8 @@ namespace NetworkGameLibrary
     {
         public string Name { get; set; }
 
+        public float speed;
+
         public NetConnection connection { get; set; }
 
         public Rectangle BoundingBox => new Rectangle(
@@ -21,11 +23,8 @@ namespace NetworkGameLibrary
             48
             );
   
-
-
         public int xPosition { get; set; }
         public int yPosition { get; set; }
-         
 
         public Player(string name, int xPos, int yPos)
         {
@@ -33,7 +32,6 @@ namespace NetworkGameLibrary
             xPosition = xPos;
             yPosition = yPos;
         }
-
         public Player() { }
     }
 }

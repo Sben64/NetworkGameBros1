@@ -202,87 +202,22 @@ namespace NetworkGameServer
             switch (key)
             {
                 case Keys.Down:
-                    foreach (var item in _players)
-                    {
-                        if (player != item)
-                        {
-                            if (IsTouchingBottom(player, item) || IsTouchingTop(player, item))
-                            {
-
-                            }
-                            else
-                            {
-                                player.yPosition++;
-                            }
-                        }
-                        else
-                        {
-                            player.yPosition++;
-                        }
-                    }
+                    player.yPosition++;
                     Console.WriteLine(key.ToString());
                     break;
+
                 case Keys.Up:
-                    foreach (var item in _players)
-                    {
-                        if (player != item)
-                        {
-                            if (IsTouchingBottom(player, item) || IsTouchingTop(player, item))
-                            {
-
-                            }
-                            else
-                            {
-                                player.yPosition--;
-                            }
-                        }
-                        else
-                        {
-                            player.yPosition--;
-                        }
-                    }
+                    player.yPosition--;
                     Console.WriteLine(key.ToString());
                     break;
+
                 case Keys.Left:
-                    foreach (var item in _players)
-                    {
-                        if (player != item)
-                        {
-                            if (IsTouchingRight(player, item) || IsTouchingLeft(player, item))
-                            {
-
-                            }
-                            else
-                            {
-                                player.xPosition--;
-                            }
-                        }
-                        else
-                        {
-                            player.xPosition--;
-                        }
-                    }
+                    player.xPosition--;
                     Console.WriteLine(key.ToString());
                     break;
-                case Keys.Right:
-                    foreach (var item in _players)
-                    {
-                        if (player != item)
-                        {
-                            if (IsTouchingBottom(player, item) || IsTouchingTop(player, item))
-                            {
 
-                            }
-                            else
-                            {
-                                player.xPosition++;
-                            }
-                        }
-                        else
-                        {
-                            player.xPosition++;
-                        }
-                    }
+                case Keys.Right:
+                    player.xPosition++;
                     Console.WriteLine(key.ToString());
                     break;
             }
