@@ -14,6 +14,15 @@ namespace NetworkGameLibrary
 
         public NetConnection connection { get; set; }
 
+        public Rectangle BoundingBox => new Rectangle(
+            (int)xPosition,
+            (int)yPosition,
+            32,
+            48
+            );
+  
+
+
         public int xPosition { get; set; }
         public int yPosition { get; set; }
          

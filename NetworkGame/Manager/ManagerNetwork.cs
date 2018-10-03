@@ -183,27 +183,6 @@ namespace NetworkGame
             _client.Disconnect("Byebyelesgars");
         }
 
-
-       
-        //public void getInput()
-        //{
-        //    if (Keyboard.GetState().IsKeyDown(down))
-        //    {
-        //        Player.yPosition++;
-        //    }
-        //    if (Keyboard.GetState().IsKeyDown(up))
-        //    {
-        //        Player.yPosition--;
-        //    }
-        //    if (Keyboard.GetState().IsKeyDown(right))
-        //    {
-        //        Player.xPosition++;
-        //    }
-        //    if (Keyboard.GetState().IsKeyDown(left))
-        //    {
-        //        Player.xPosition--;
-        //    }
-        //}
         public void SendInput(Keys keys)
         {
             var outmessage = _client.CreateMessage();

@@ -72,7 +72,7 @@ namespace NetworkGameServer
                             //Si une connection est fermé sans envoyer un packet de type disconnected alors on le détecte et on l'enleve de la liste
                             if (inc.SenderConnection.Status == NetConnectionStatus.Disconnected)
                             {
-                                
+
                                 foreach (var item in connectedClients)
                                 {
                                     if (item.Status == NetConnectionStatus.Disconnected)
@@ -166,7 +166,7 @@ namespace NetworkGameServer
             var outmessage = _netPeer.CreateMessage();
             outmessage.Write((byte)PacketType.Input);
             outmessage.WriteAllProperties(player);
-            _netPeer.SendMessage(outmessage, connectedClients,NetDeliveryMethod.ReliableOrdered,0);
+            _netPeer.SendMessage(outmessage, connectedClients, NetDeliveryMethod.ReliableOrdered, 0);
         }
 
         private void SendNewPlayer(Player player, NetIncomingMessage inc)
@@ -181,7 +181,6 @@ namespace NetworkGameServer
         private void SendFullPlayerList()
 
         {
-
             Console.WriteLine("Sending full player list");
             var outmessage = _netPeer.CreateMessage();
             outmessage.Write((byte)PacketType.AllPlayers);
@@ -198,27 +197,129 @@ namespace NetworkGameServer
         {
             Console.WriteLine("Received new input");
             var key = (Keys)inc.ReadByte();
-
+            var player = new Player();
+            player = _players.Find(x => x.connection == inc.SenderConnection);
             switch (key)
             {
                 case Keys.Down:
-                    _players.Find(x => x.connection == inc.SenderConnection).yPosition++;
+                    foreach (var item in _players)
+                    {
+                        if (player != item)
+                        {
+                            if (IsTouchingBottom(player, item) || IsTouchingTop(player, item))
+                            {
+
+                            }
+                            else
+                            {
+                                player.yPosition++;
+                            }
+                        }
+                        else
+                        {
+                            player.yPosition++;
+                        }
+                    }
                     Console.WriteLine(key.ToString());
                     break;
                 case Keys.Up:
-                    _players.Find(x => x.connection == inc.SenderConnection).yPosition--;
+                    foreach (var item in _players)
+                    {
+                        if (player != item)
+                        {
+                            if (IsTouchingBottom(player, item) || IsTouchingTop(player, item))
+                            {
+
+                            }
+                            else
+                            {
+                                player.yPosition--;
+                            }
+                        }
+                        else
+                        {
+                            player.yPosition--;
+                        }
+                    }
                     Console.WriteLine(key.ToString());
                     break;
                 case Keys.Left:
-                    _players.Find(x => x.connection == inc.SenderConnection).xPosition--;
+                    foreach (var item in _players)
+                    {
+                        if (player != item)
+                        {
+                            if (IsTouchingRight(player, item) || IsTouchingLeft(player, item))
+                            {
+
+                            }
+                            else
+                            {
+                                player.xPosition--;
+                            }
+                        }
+                        else
+                        {
+                            player.xPosition--;
+                        }
+                    }
                     Console.WriteLine(key.ToString());
                     break;
                 case Keys.Right:
-                    _players.Find(x => x.connection == inc.SenderConnection).xPosition++;
+                    foreach (var item in _players)
+                    {
+                        if (player != item)
+                        {
+                            if (IsTouchingBottom(player, item) || IsTouchingTop(player, item))
+                            {
+
+                            }
+                            else
+                            {
+                                player.xPosition++;
+                            }
+                        }
+                        else
+                        {
+                            player.xPosition++;
+                        }
+                    }
                     Console.WriteLine(key.ToString());
                     break;
             }
-            SendNewPosition(_players.Find(x => x.connection == inc.SenderConnection), inc);
+            SendNewPosition(player, inc);
         }
+
+        protected bool IsTouchingLeft(Player player1, Player player2)
+        {
+            return player1.BoundingBox.Right > player2.BoundingBox.Left &&
+                   player1.BoundingBox.Left < player2.BoundingBox.Left &&
+                   player1.BoundingBox.Bottom > player2.BoundingBox.Top &&
+                   player1.BoundingBox.Top < player2.BoundingBox.Bottom;
+        }
+
+        protected bool IsTouchingRight(Player player1, Player player2)
+        {
+            return player1.BoundingBox.Left < player2.BoundingBox.Right &&
+                   player1.BoundingBox.Right > player2.BoundingBox.Right &&
+                   player1.BoundingBox.Bottom > player2.BoundingBox.Top &&
+                   player1.BoundingBox.Top < player2.BoundingBox.Bottom;
+        }
+
+        protected bool IsTouchingTop(Player player1, Player player2)
+        {
+            return player1.BoundingBox.Bottom > player2.BoundingBox.Top &&
+                   player1.BoundingBox.Top < player2.BoundingBox.Top &&
+                   player1.BoundingBox.Right > player2.BoundingBox.Left &&
+                   player1.BoundingBox.Left < player2.BoundingBox.Right;
+        }
+
+        protected bool IsTouchingBottom(Player player1, Player player2)
+        {
+            return player1.BoundingBox.Top < player2.BoundingBox.Bottom &&
+                   player1.BoundingBox.Bottom > player2.BoundingBox.Bottom &&
+                   player1.BoundingBox.Right > player2.BoundingBox.Left &&
+                   player1.BoundingBox.Left < player2.BoundingBox.Right;
+        }
+
     }
 }
