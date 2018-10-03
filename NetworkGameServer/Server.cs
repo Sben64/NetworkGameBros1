@@ -113,8 +113,8 @@ namespace NetworkGameServer
             _players.Add(player);
             outmsg.Write((byte)PacketType.Login);
             outmsg.Write(true);
-            outmsg.Write(player.xPosition);
-            outmsg.Write(player.yPosition);
+            outmsg.Write(player._position.X);
+            outmsg.Write(player._position.Y);
             outmsg.Write(_players.Count - 1);
             Console.WriteLine("Packets send (PacketType : Login )");
             //Envoie du paquet NewPlayer
@@ -212,12 +212,12 @@ namespace NetworkGameServer
                             }
                             else
                             {
-                                player.yPosition++;
+                                player._position.Y++;
                             }
                         }
                         else
                         {
-                            player.yPosition++;
+                            player._position.Y++;
                         }
                     }
                     Console.WriteLine(key.ToString());
@@ -233,12 +233,12 @@ namespace NetworkGameServer
                             }
                             else
                             {
-                                player.yPosition--;
+                                player._position.Y--;
                             }
                         }
                         else
                         {
-                            player.yPosition--;
+                            player._position.Y--;
                         }
                     }
                     Console.WriteLine(key.ToString());
@@ -254,12 +254,12 @@ namespace NetworkGameServer
                             }
                             else
                             {
-                                player.xPosition--;
+                                player._position.X--;
                             }
                         }
                         else
                         {
-                            player.xPosition--;
+                            player._position.X--;
                         }
                     }
                     Console.WriteLine(key.ToString());
@@ -275,12 +275,12 @@ namespace NetworkGameServer
                             }
                             else
                             {
-                                player.xPosition++;
+                                player._position.X++;
                             }
                         }
                         else
                         {
-                            player.xPosition++;
+                            player._position.X++;
                         }
                     }
                     Console.WriteLine(key.ToString());

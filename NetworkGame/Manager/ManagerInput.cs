@@ -28,16 +28,16 @@ namespace NetworkGame.Manager
                 switch (keys)
                 {
                     case Keys.Down:
-                        ManagerNetwork.Player.yPosition++;
+                        ManagerNetwork.Player._position.Y++;
                         break;
                     case Keys.Up:
-                        ManagerNetwork.Player.yPosition--;
+                        ManagerNetwork.Player._position.Y--;
                         break;
                     case Keys.Left:
-                        ManagerNetwork.Player.xPosition--;
+                        ManagerNetwork.Player._position.X--;
                         break;
                     case Keys.Right:
-                        ManagerNetwork.Player.xPosition++;
+                        ManagerNetwork.Player._position.X++;
                         break;
                 }
                 ManagerNetwork.SendInput(keys);
