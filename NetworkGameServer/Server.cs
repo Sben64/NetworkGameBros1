@@ -113,8 +113,8 @@ namespace NetworkGameServer
             _players.Add(player);
             outmsg.Write((byte)PacketType.Login);
             outmsg.Write(true);
-            outmsg.Write(player.xPosition);
-            outmsg.Write(player.yPosition);
+            outmsg.Write(player._position.X);
+            outmsg.Write(player._position.Y);
             outmsg.Write(_players.Count - 1);
             Console.WriteLine("Packets send (PacketType : Login )");
             //Envoie du paquet NewPlayer
@@ -202,22 +202,89 @@ namespace NetworkGameServer
             switch (key)
             {
                 case Keys.Down:
-                    player.yPosition++;
+                    foreach (var item in _players)
+                    {
+                        if (player != item)
+                        {
+                            if (IsTouchingBottom(player, item) || IsTouchingTop(player, item))
+                            {
+
+                            }
+                            else
+                            {
+                                player._position.Y++;
+                            }
+                        }
+                        else
+                        {
+                            player._position.Y++;
+                        }
+                    }
                     Console.WriteLine(key.ToString());
                     break;
-
                 case Keys.Up:
-                    player.yPosition--;
+                    foreach (var item in _players)
+                    {
+                        if (player != item)
+                        {
+                            if (IsTouchingBottom(player, item) || IsTouchingTop(player, item))
+                            {
+
+                            }
+                            else
+                            {
+                                player.yPosition--;
+                            }
+                        }
+                        else
+                        {
+                            player.yPosition--;
+                        }
+                    }
                     Console.WriteLine(key.ToString());
                     break;
 
                 case Keys.Left:
-                    player.xPosition--;
+                    foreach (var item in _players)
+                    {
+                        if (player != item)
+                        {
+                            if (IsTouchingRight(player, item) || IsTouchingLeft(player, item))
+                            {
+
+                            }
+                            else
+                            {
+                                player._position.X--;
+                            }
+                        }
+                        else
+                        {
+                            player._position.X--;
+                        }
+                    }
                     Console.WriteLine(key.ToString());
                     break;
 
                 case Keys.Right:
-                    player.xPosition++;
+                    foreach (var item in _players)
+                    {
+                        if (player != item)
+                        {
+                            if (IsTouchingBottom(player, item) || IsTouchingTop(player, item))
+                            {
+
+                            }
+                            else
+                            {
+                                player._position.X++;
+                            }
+                        }
+                        else
+                        {
+                            player._position.X++;
+                        }
+                    }
                     Console.WriteLine(key.ToString());
                     break;
             }

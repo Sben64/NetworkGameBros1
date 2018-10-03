@@ -19,10 +19,10 @@ namespace NetworkGame
         /// <summary>
         /// Inputs
         /// </summary>
-        Keys down = Keys.Down;
-        Keys up = Keys.Up;
-        Keys right = Keys.Right;
-        Keys left = Keys.Left;
+        //Keys down = Keys.Down;
+        //Keys up = Keys.Up;
+        //Keys right = Keys.Right;
+        //Keys left = Keys.Left;
 
 
         ManagerInput _input;
@@ -97,8 +97,8 @@ namespace NetworkGame
                     case PacketType.Login:
                         if (inc.ReadBoolean())
                         {
-                            Player.xPosition = inc.ReadInt32();
-                            Player.yPosition = inc.ReadInt32();
+                            Player._position.X = inc.ReadFloat();
+                            Player._position.Y = inc.ReadFloat();
                             ReceiveAllPlayers(inc);
                         }
                         break;
@@ -129,15 +129,15 @@ namespace NetworkGame
                         inc.ReadAllProperties(playerPos);
                         if (Player.Name == playerPos.Name)
                         {
-                            Player.xPosition = playerPos.xPosition;
-                            Player.yPosition = playerPos.yPosition;
+                            Player._position.X = playerPos._position.X;
+                            Player._position.Y = playerPos._position.Y;
                         }
                         else if(OtherPlayers.Count > 0)
                         {
                             try
                             {
-                                OtherPlayers.Find(x => x.Name == playerPos.Name).xPosition = playerPos.xPosition;
-                                OtherPlayers.Find(x => x.Name == playerPos.Name).yPosition = playerPos.yPosition;
+                                OtherPlayers.Find(x => x.Name == playerPos.Name)._position.X = playerPos._position.X;
+                                OtherPlayers.Find(x => x.Name == playerPos.Name)._position.Y = playerPos._position.Y;
                             }
                             catch
                             {
@@ -164,8 +164,8 @@ namespace NetworkGame
                 if (OtherPlayers.Any(p => p.Name == player.Name))
                 {
                     var oldPlayer = OtherPlayers.FirstOrDefault(p => p.Name == player.Name);
-                    oldPlayer.xPosition = player.xPosition;
-                    oldPlayer.yPosition = player.yPosition;
+                    oldPlayer._position.X = player._position.X;
+                    oldPlayer._position.Y = player._position.Y;
                 }
                 else
                 {
