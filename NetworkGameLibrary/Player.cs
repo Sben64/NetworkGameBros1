@@ -11,12 +11,11 @@ namespace NetworkGameLibrary
         public float speed;
 
         public NetConnection connection { get; set; }
-        public Texture2D _texture;
-        public Vector2 _position;
-        public Vector2 _velocity;
+        //public Vector2 _position;
+        //public Vector2 _velocity;
         public Rectangle BoundingBox => new Rectangle(
-            (int)_position.X,
-            (int)_position.Y,
+            (int)xPosition,
+            (int)yPosition,
             32,
             48
             );
@@ -27,9 +26,8 @@ namespace NetworkGameLibrary
         public Player(string name, int xPos, int yPos)
         {
             Name = name;
-            _position.X = xPos;
-            _position.Y = yPos;
-            _position = _velocity;
+            xPosition = xPos;
+            yPosition = yPos;
         }
         public Player() { }
     }
