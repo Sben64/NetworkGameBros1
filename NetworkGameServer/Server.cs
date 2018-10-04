@@ -113,8 +113,8 @@ namespace NetworkGameServer
             _players.Add(player);
             outmsg.Write((byte)PacketType.Login);
             outmsg.Write(true);
-            outmsg.Write(player._position.X);
-            outmsg.Write(player._position.Y);
+            outmsg.Write(player.xPosition);
+            outmsg.Write(player.yPosition);
             outmsg.Write(_players.Count - 1);
             Console.WriteLine("Packets send (PacketType : Login )");
             //Envoie du paquet NewPlayer
@@ -200,6 +200,7 @@ namespace NetworkGameServer
             Console.WriteLine("Received new input");
             var key = (Keys)inc.ReadByte();
             var player = new Player();
+            bool collided = false;
             player = _players.Find(x => x.connection == inc.SenderConnection);
             switch (key)
             {
@@ -210,20 +211,24 @@ namespace NetworkGameServer
                         {
                             if (IsTouchingBottom(player, item) || IsTouchingTop(player, item))
                             {
+                                Console.WriteLine(IsTouchingBottom(player, item) + " : " + IsTouchingTop(player, item));
+                                collided = true;
+                                player.yPosition--;
+                                continue;
+                            }
+                        }
 
-                            }
-                            else
-                            {
-                                player._position.Y++;
-                            }
-                        }
-                        else
-                        {
-                            player._position.Y++;
-                        }
                     }
-                    Console.WriteLine(key.ToString());
+                    if (!collided)
+                    {
+                        player.yPosition++;
+                    }
+                    if (_players.Count == 1)
+                    {
+                        player.yPosition++;
+                    }
                     break;
+
                 case Keys.Up:
                     foreach (var item in _players)
                     {
@@ -231,20 +236,24 @@ namespace NetworkGameServer
                         {
                             if (IsTouchingBottom(player, item) || IsTouchingTop(player, item))
                             {
+                                Console.WriteLine(IsTouchingBottom(player, item) + " : " + IsTouchingTop(player, item));
+                                collided = true;
+                                player.yPosition++;
+                                continue;
+                            }
+                        }
 
-                            }
-                            else
-                            {
-                                player._position.Y--;
-                            }
-                        }
-                        else
-                        {
-                            player._position.Y--;
-                        }
                     }
-                    Console.WriteLine(key.ToString());
+                    if (!collided)
+                    {
+                        player.yPosition--;
+                    }
+                    if (_players.Count == 1)
+                    {
+                        player.yPosition--;
+                    }
                     break;
+
                 case Keys.Left:
                     foreach (var item in _players)
                     {
@@ -252,40 +261,44 @@ namespace NetworkGameServer
                         {
                             if (IsTouchingRight(player, item) || IsTouchingLeft(player, item))
                             {
-
+                                Console.WriteLine(IsTouchingRight(player, item) + " : " + IsTouchingLeft(player, item));
+                                collided = true;
+                                player.xPosition++;
+                                continue;
                             }
-                            else
-                            {
-                                player._position.X--;
-                            }
-                        }
-                        else
-                        {
-                            player._position.X--;
                         }
                     }
-                    Console.WriteLine(key.ToString());
+                    if (!collided)
+                    {
+                        player.xPosition--;
+                    }
+                    if (_players.Count == 1)
+                    {
+                        player.xPosition--;
+                    }
                     break;
                 case Keys.Right:
                     foreach (var item in _players)
                     {
                         if (player != item)
                         {
-                            if (IsTouchingBottom(player, item) || IsTouchingTop(player, item))
+                            if (IsTouchingLeft(player, item) || IsTouchingRight(player, item))
                             {
-
+                                Console.WriteLine(IsTouchingRight(player, item) + " : " + IsTouchingLeft(player, item));
+                                collided = true;
+                                player.xPosition--;
+                                continue;
                             }
-                            else
-                            {
-                                player._position.X++;
-                            }
-                        }
-                        else
-                        {
-                            player._position.X++;
                         }
                     }
-                    Console.WriteLine(key.ToString());
+                    if (!collided)
+                    {
+                        player.xPosition++;
+                    }
+                    if (_players.Count == 1)
+                    {
+                        player.xPosition++;
+                    }
                     break;
             }
             SendNewPosition(player, inc);
