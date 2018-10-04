@@ -14,7 +14,7 @@ namespace NetworkGame
         SpriteBatch spriteBatch;
         private ManagerNetwork _networkConnection;
         private Manager.ManagerInput _input;
-        //private Texture2D _texture;
+        private Texture2D _texture;
         Color _color;
         public Game1()
         {
@@ -54,7 +54,7 @@ namespace NetworkGame
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            _networkConnection.Player._texture = Content.Load<Texture2D>("Mario");
+            _texture = Content.Load<Texture2D>("Mario");
             // TODO: use this.Content to load your game content here
         }
 
@@ -94,10 +94,10 @@ namespace NetworkGame
             spriteBatch.Begin();
             if (ManagerNetwork.isConnected)
             {
-                spriteBatch.Draw(_networkConnection.Player._texture, _networkConnection.Player.BoundingBox, Color.White);
+                spriteBatch.Draw(_texture, _networkConnection.Player.BoundingBox, Color.White);
                 foreach (var other in _networkConnection.OtherPlayers)
                 {
-                    spriteBatch.Draw(other._texture, other.BoundingBox, Color.White);
+                    spriteBatch.Draw(_texture, other.BoundingBox, Color.White);
                 }
             }
             spriteBatch.End();

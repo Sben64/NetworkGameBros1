@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net.Sockets;
 using Lidgren.Network;
 using NetworkGameLibrary;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework;
 
 namespace NetworkGameServer
 {
@@ -155,9 +155,11 @@ namespace NetworkGameServer
             {
                 Name = inc.ReadString(),
                 connection = inc.SenderConnection,
+                //_position = new Vector2(random.Next(0, 750), random.Next(0, 420))
                 xPosition = random.Next(0, 750),
                 yPosition = random.Next(0, 420)
             };
+
             return player;
         }
         private void SendNewPosition(Player player, NetIncomingMessage inc)
@@ -289,6 +291,9 @@ namespace NetworkGameServer
             SendNewPosition(player, inc);
         }
 
+        // NICO :
+        // IsTouchingLeft et IsTouchingRight donnent le même résultat
+        // Probablement Down et Up
         protected bool IsTouchingLeft(Player player1, Player player2)
         {
             return player1.BoundingBox.Right > player2.BoundingBox.Left &&

@@ -19,10 +19,10 @@ namespace NetworkGame
         /// <summary>
         /// Inputs
         /// </summary>
-        //Keys down = Keys.Down;
-        //Keys up = Keys.Up;
-        //Keys right = Keys.Right;
-        //Keys left = Keys.Left;
+        Keys down = Keys.Down;
+        Keys up = Keys.Up;
+        Keys right = Keys.Right;
+        Keys left = Keys.Left;
 
 
         ManagerInput _input;
@@ -97,8 +97,8 @@ namespace NetworkGame
                     case PacketType.Login:
                         if (inc.ReadBoolean())
                         {
-                            Player._position.X = inc.ReadFloat();
-                            Player._position.Y = inc.ReadFloat();
+                            Player.xPosition = inc.ReadFloat();
+                            Player.yPosition = inc.ReadFloat();
                             ReceiveAllPlayers(inc);
                         }
                         break;
@@ -106,7 +106,7 @@ namespace NetworkGame
                     case PacketType.NewPlayer:
                         //Créé l'instance du nouveau joueur
                         var player = new Player();
-                        //assigne les propriétés reçu au nouveau joueur
+                        //Assigne les propriétés reçu au nouveau joueur
                         inc.ReadAllProperties(player);
                         //Si le nom du nouveau joueur est différent du nom du joueur alors on le rajoute à la liste
                         if (player.Name != Player.Name)
@@ -119,7 +119,7 @@ namespace NetworkGame
                         ReceiveAllPlayers(inc);
                         break;
                     case PacketType.Disconnected:
-                        //Quand un joueur se déconnecte on lui envoie les propriétés du joueur déconnecter et on le supprime de la liste
+                        //Quand un joueur se déconnecte on lui envoie les propriétés du joueur déconnecté et on le supprime de la liste
                         var playerDc = new Player();
                         inc.ReadAllProperties(playerDc);
                         OtherPlayers.Remove(OtherPlayers.Find(x => x.Name == playerDc.Name));
@@ -137,7 +137,7 @@ namespace NetworkGame
                             try
                             {
                                 OtherPlayers.Find(x => x.Name == playerPos.Name)._position.X = playerPos._position.X;
-                                OtherPlayers.Find(x => x.Name == playerPos.Name)._position.Y = playerPos._position.Y;
+                                OtherPlayers.Find(y => y.Name == playerPos.Name)._position.Y = playerPos._position.Y;
                             }
                             catch
                             {
@@ -191,6 +191,5 @@ namespace NetworkGame
             outmessage.Write(Player.Name);
             _client.SendMessage(outmessage, NetDeliveryMethod.ReliableOrdered);
         }
-
     }
 }
