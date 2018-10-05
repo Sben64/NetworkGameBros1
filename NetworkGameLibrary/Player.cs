@@ -13,6 +13,7 @@ namespace NetworkGameLibrary
         //public Texture2D _texture;       
         public Vector2 _position;
         public Vector2 _velocity;
+        public float speed = 50f;
         public Rectangle BoundingBox => new Rectangle(
             (int)xPosition,
             (int)yPosition,
@@ -50,8 +51,10 @@ namespace NetworkGameLibrary
         public Player(string name, int xPos, int yPos)
         {
             Name = name;
-            xPosition = xPos;
-            yPosition = yPos;
+            
+            xPosition  = xPos;
+            yPosition  = yPos;
+            //_position += _velocity;
         }
 
         public Player()

@@ -213,20 +213,17 @@ namespace NetworkGameServer
                             {
                                 Console.WriteLine(IsTouchingBottom(player, item) + " : " + IsTouchingTop(player, item));
                                 collided = true;
-                                player.yPosition--;
+                                player._position.Y = 0f;
                                 continue;
                             }
                         }
 
                     }
-                    if (!collided)
+                    if (!collided || _players.Count == 1)
                     {
-                        player.yPosition++;
+                        player._position.Y += player.speed;
                     }
-                    if (_players.Count == 1)
-                    {
-                        player.yPosition++;
-                    }
+
                     break;
 
                 case Keys.Up:
@@ -238,19 +235,15 @@ namespace NetworkGameServer
                             {
                                 Console.WriteLine(IsTouchingBottom(player, item) + " : " + IsTouchingTop(player, item));
                                 collided = true;
-                                player.yPosition++;
+                                player._position.Y = 0f;
                                 continue;
                             }
                         }
 
                     }
-                    if (!collided)
+                    if (!collided || _players.Count == 1)
                     {
-                        player.yPosition--;
-                    }
-                    if (_players.Count == 1)
-                    {
-                        player.yPosition--;
+                        player._position.Y -= player.speed;
                     }
                     break;
 
@@ -263,19 +256,16 @@ namespace NetworkGameServer
                             {
                                 Console.WriteLine(IsTouchingRight(player, item) + " : " + IsTouchingLeft(player, item));
                                 collided = true;
-                                player.xPosition++;
+                                player._position.X = 0f;
                                 continue;
                             }
                         }
                     }
-                    if (!collided)
+                    if (!collided || _players.Count == 1)
                     {
-                        player.xPosition--;
+                        player._position.X -= player.speed;
                     }
-                    if (_players.Count == 1)
-                    {
-                        player.xPosition--;
-                    }
+
                     break;
                 case Keys.Right:
                     foreach (var item in _players)
@@ -286,19 +276,16 @@ namespace NetworkGameServer
                             {
                                 Console.WriteLine(IsTouchingRight(player, item) + " : " + IsTouchingLeft(player, item));
                                 collided = true;
-                                player.xPosition--;
+                                player._position.X = 0f;
                                 continue;
                             }
                         }
                     }
-                    if (!collided)
+                    if (!collided || _players.Count == 1)
                     {
-                        player.xPosition++;
+                        player._position.X += player.speed;
                     }
-                    if (_players.Count == 1)
-                    {
-                        player.xPosition++;
-                    }
+
                     break;
             }
             SendNewPosition(player, inc);
