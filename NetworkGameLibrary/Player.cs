@@ -1,6 +1,7 @@
 ﻿using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 
 namespace NetworkGameLibrary
 {
@@ -8,27 +9,68 @@ namespace NetworkGameLibrary
     {
         public string Name { get; set; }
 
-        public float speed;
-
         public NetConnection connection { get; set; }
-        //public Vector2 _position;
-        //public Vector2 _velocity;
+        //public Texture2D _texture;       
+        public Vector2 _position;
+        public Vector2 _velocity;
+        public float speed = 50f;
         public Rectangle BoundingBox => new Rectangle(
             (int)xPosition,
             (int)yPosition,
             32,
             48
             );
-  
-        public int xPosition { get; set; }
-        public int yPosition { get; set; }
+
+
+
+        public float xPosition
+        {
+            get
+            {
+                return _position.X;
+            }
+            set
+            {
+                _position.X = value;
+            }
+        }
+        //public int xPosition { get; set; }
+        public float yPosition
+        {
+            get
+            {
+                return _position.Y;
+            }
+            set
+            {
+                _position.Y = value;
+            }
+        }
+        //public int yPosition { get; set; }
 
         public Player(string name, int xPos, int yPos)
         {
             Name = name;
-            xPosition = xPos;
-            yPosition = yPos;
+            
+            xPosition  = xPos;
+            yPosition  = yPos;
+            //_position += _velocity;
         }
-        public Player() { }
+
+        public Player()
+        {
+
+        }
+
+        public bool Collision(List<Player> otherPlayer)
+        {
+            bool collide= false;
+            foreach (var item in otherPlayer)
+            {
+                if(this.BoundingBox.Intersects(item.BoundingBox))
+                    collide = true;
+            }
+            return collide;
+        }
     }
 }

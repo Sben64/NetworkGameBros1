@@ -38,7 +38,7 @@ namespace NetworkGame.Manager
                             {
                                 if (IsTouchingBottom(ManagerNetwork.Player, item) || IsTouchingTop(ManagerNetwork.Player, item))
                                 {
-                                    ManagerNetwork.Player.yPosition--;
+                                    ManagerNetwork.Player._position.Y = 0f;
                                     collided = true;
                                     continue;
                                 }
@@ -56,7 +56,7 @@ namespace NetworkGame.Manager
                             {
                                 if (IsTouchingBottom(ManagerNetwork.Player, item) || IsTouchingTop(ManagerNetwork.Player, item))
                                 {
-                                    ManagerNetwork.Player.yPosition++;
+                                    ManagerNetwork.Player._position.Y = 0f;
                                     collided = true;
                                     continue;
                                 }
@@ -64,7 +64,7 @@ namespace NetworkGame.Manager
                         }
                         if (!collided)
                         {
-                            ManagerNetwork.Player.yPosition--;
+                            ManagerNetwork.Player._position.Y--;
                         }
 
                         break;
@@ -75,7 +75,7 @@ namespace NetworkGame.Manager
                             {
                                 if (IsTouchingRight(ManagerNetwork.Player, item) || IsTouchingLeft(ManagerNetwork.Player, item))
                                 {
-                                    ManagerNetwork.Player.xPosition++;
+                                    ManagerNetwork.Player._position.X = 0f;
                                     collided = true;
                                     continue;
                                 }
@@ -83,7 +83,7 @@ namespace NetworkGame.Manager
                         }
                         if (!collided)
                         {
-                            ManagerNetwork.Player.xPosition--;
+                            ManagerNetwork.Player._position.X--;
                         }
                         break;
                     case Keys.Right:
@@ -93,7 +93,7 @@ namespace NetworkGame.Manager
                             {
                                 if (IsTouchingLeft(ManagerNetwork.Player, item) || IsTouchingRight(ManagerNetwork.Player, item))
                                 {
-                                    ManagerNetwork.Player.xPosition--;
+                                    ManagerNetwork.Player._position.X = 0f;
                                     collided = true;
                                     continue;
                                 }
@@ -101,7 +101,7 @@ namespace NetworkGame.Manager
                         }
                         if (!collided)
                         {
-                            ManagerNetwork.Player.xPosition++;
+                            ManagerNetwork.Player._position.X++;
                         }
                         break;
                 }

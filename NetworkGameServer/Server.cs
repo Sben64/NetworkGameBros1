@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net.Sockets;
 using Lidgren.Network;
 using NetworkGameLibrary;
 using Microsoft.Xna.Framework.Input;
@@ -156,9 +155,11 @@ namespace NetworkGameServer
             {
                 Name = inc.ReadString(),
                 connection = inc.SenderConnection,
+                //_position = new Vector2(random.Next(0, 750), random.Next(0, 420))
                 xPosition = random.Next(0, 750),
                 yPosition = random.Next(0, 420)
             };
+
             return player;
         }
         private void SendNewPosition(Player player, NetIncomingMessage inc)
@@ -212,7 +213,7 @@ namespace NetworkGameServer
                             {
                                 Console.WriteLine(IsTouchingBottom(player, item) + " : " + IsTouchingTop(player, item));
                                 collided = true;
-                                player.yPosition--;
+                                player._position.Y = 0f;
                                 continue;
                             }
                         }
@@ -220,8 +221,9 @@ namespace NetworkGameServer
                     }
                     if (!collided || _players.Count == 1)
                     {
-                        player.yPosition++;
+                        player._position.Y += player.speed;
                     }
+
                     break;
 
                 case Keys.Up:
@@ -233,7 +235,7 @@ namespace NetworkGameServer
                             {
                                 Console.WriteLine(IsTouchingBottom(player, item) + " : " + IsTouchingTop(player, item));
                                 collided = true;
-                                player.yPosition++;
+                                player._position.Y = 0f;
                                 continue;
                             }
                         }
@@ -241,7 +243,7 @@ namespace NetworkGameServer
                     }
                     if (!collided || _players.Count == 1)
                     {
-                        player.yPosition--;
+                        player._position.Y -= player.speed;
                     }
                     break;
 
@@ -254,16 +256,16 @@ namespace NetworkGameServer
                             {
                                 Console.WriteLine(IsTouchingRight(player, item) + " : " + IsTouchingLeft(player, item));
                                 collided = true;
-                                player.xPosition++;
+                                player._position.X = 0f;
                                 continue;
                             }
                         }
                     }
                     if (!collided || _players.Count == 1)
                     {
-                        player.xPosition--;
+                        player._position.X -= player.speed;
                     }
-                    
+
                     break;
                 case Keys.Right:
                     foreach (var item in _players)
@@ -274,20 +276,24 @@ namespace NetworkGameServer
                             {
                                 Console.WriteLine(IsTouchingRight(player, item) + " : " + IsTouchingLeft(player, item));
                                 collided = true;
-                                player.xPosition--;
+                                player._position.X = 0f;
                                 continue;
                             }
                         }
                     }
                     if (!collided || _players.Count == 1)
                     {
-                        player.xPosition++;
+                        player._position.X += player.speed;
                     }
+
                     break;
             }
             SendNewPosition(player, inc);
         }
 
+        // NICO :
+        // IsTouchingLeft et IsTouchingRight donnent le même résultat
+        // Probablement Down et Up
         protected bool IsTouchingLeft(Player player1, Player player2)
         {
             return player1.BoundingBox.Right > player2.BoundingBox.Left &&
