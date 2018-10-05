@@ -218,11 +218,7 @@ namespace NetworkGameServer
                         }
 
                     }
-                    if (!collided)
-                    {
-                        player.yPosition++;
-                    }
-                    if (_players.Count == 1)
+                    if (!collided || _players.Count == 1)
                     {
                         player.yPosition++;
                     }
@@ -243,11 +239,7 @@ namespace NetworkGameServer
                         }
 
                     }
-                    if (!collided)
-                    {
-                        player.yPosition--;
-                    }
-                    if (_players.Count == 1)
+                    if (!collided || _players.Count == 1)
                     {
                         player.yPosition--;
                     }
@@ -267,14 +259,11 @@ namespace NetworkGameServer
                             }
                         }
                     }
-                    if (!collided)
+                    if (!collided || _players.Count == 1)
                     {
                         player.xPosition--;
                     }
-                    if (_players.Count == 1)
-                    {
-                        player.xPosition--;
-                    }
+                    
                     break;
                 case Keys.Right:
                     foreach (var item in _players)
@@ -290,11 +279,7 @@ namespace NetworkGameServer
                             }
                         }
                     }
-                    if (!collided)
-                    {
-                        player.xPosition++;
-                    }
-                    if (_players.Count == 1)
+                    if (!collided || _players.Count == 1)
                     {
                         player.xPosition++;
                     }
