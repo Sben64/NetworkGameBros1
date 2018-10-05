@@ -202,6 +202,7 @@ namespace NetworkGameServer
             var player = new Player();
             bool collided = false;
             player = _players.Find(x => x.connection == inc.SenderConnection);
+            player._velocity = Vector2.Zero;
             switch (key)
             {
                 case Keys.Down:
@@ -209,11 +210,11 @@ namespace NetworkGameServer
                     {
                         if (player != item)
                         {
-                            if (IsTouchingBottom(player, item) || IsTouchingTop(player, item))
+                            if (player._velocity.Y > 0 && IsTouchingBottom(player, item) || player._velocity.Y > 0 && IsTouchingTop(player, item))
                             {
                                 Console.WriteLine(IsTouchingBottom(player, item) + " : " + IsTouchingTop(player, item));
                                 collided = true;
-                                player._position.Y = 0f;
+                                player._velocity.Y = 0f;
                                 continue;
                             }
                         }
@@ -221,7 +222,7 @@ namespace NetworkGameServer
                     }
                     if (!collided || _players.Count == 1)
                     {
-                        player._position.Y += player.speed;
+                        player._velocity.Y += player.speed;
                     }
 
                     break;
@@ -231,11 +232,11 @@ namespace NetworkGameServer
                     {
                         if (player != item)
                         {
-                            if (IsTouchingBottom(player, item) || IsTouchingTop(player, item))
+                            if (player._velocity.Y > 0 && IsTouchingBottom(player, item) || player._velocity.Y > 0 && IsTouchingTop(player, item))
                             {
                                 Console.WriteLine(IsTouchingBottom(player, item) + " : " + IsTouchingTop(player, item));
                                 collided = true;
-                                player._position.Y = 0f;
+                                player._velocity.Y = 0f;
                                 continue;
                             }
                         }
@@ -243,7 +244,7 @@ namespace NetworkGameServer
                     }
                     if (!collided || _players.Count == 1)
                     {
-                        player._position.Y -= player.speed;
+                        player._velocity.Y -= player.speed;
                     }
                     break;
 
@@ -252,42 +253,42 @@ namespace NetworkGameServer
                     {
                         if (player != item)
                         {
-                            if (IsTouchingRight(player, item) || IsTouchingLeft(player, item))
+                            if (player._velocity.X < 0 && IsTouchingRight(player, item) || player._velocity.X > 0 && IsTouchingLeft(player, item))
                             {
                                 Console.WriteLine(IsTouchingRight(player, item) + " : " + IsTouchingLeft(player, item));
                                 collided = true;
-                                player._position.X = 0f;
+                                player._velocity.X = 0f;
                                 continue;
                             }
                         }
                     }
                     if (!collided || _players.Count == 1)
                     {
-                        player._position.X -= player.speed;
+                        player._velocity.X -= player.speed;
                     }
 
                     break;
                 case Keys.Right:
+                    player._velocity.X += player.speed;
                     foreach (var item in _players)
                     {
                         if (player != item)
                         {
-                            if (IsTouchingLeft(player, item) || IsTouchingRight(player, item))
+                            if (player._velocity.X >0 && IsTouchingLeft(player, item) || player._velocity.X < 0 && IsTouchingRight(player, item))
                             {
                                 Console.WriteLine(IsTouchingRight(player, item) + " : " + IsTouchingLeft(player, item));
                                 collided = true;
-                                player._position.X = 0f;
+                                player._velocity.X = 0f;
                                 continue;
                             }
                         }
                     }
-                    if (!collided || _players.Count == 1)
-                    {
-                        player._position.X += player.speed;
-                    }
+                        
+                    
 
                     break;
             }
+            player._position += player._velocity;
             SendNewPosition(player, inc);
         }
 
@@ -296,7 +297,7 @@ namespace NetworkGameServer
         // Probablement Down et Up
         protected bool IsTouchingLeft(Player player1, Player player2)
         {
-            return player1.BoundingBox.Right > player2.BoundingBox.Left &&
+            return player1.BoundingBox.Right + player1._velocity.X > player2.BoundingBox.Left &&
                    player1.BoundingBox.Left < player2.BoundingBox.Left &&
                    player1.BoundingBox.Bottom > player2.BoundingBox.Top &&
                    player1.BoundingBox.Top < player2.BoundingBox.Bottom;
@@ -304,7 +305,7 @@ namespace NetworkGameServer
 
         protected bool IsTouchingRight(Player player1, Player player2)
         {
-            return player1.BoundingBox.Left < player2.BoundingBox.Right &&
+            return player1.BoundingBox.Left + player1._velocity.X < player2.BoundingBox.Right &&
                    player1.BoundingBox.Right > player2.BoundingBox.Right &&
                    player1.BoundingBox.Bottom > player2.BoundingBox.Top &&
                    player1.BoundingBox.Top < player2.BoundingBox.Bottom;
@@ -312,7 +313,7 @@ namespace NetworkGameServer
 
         protected bool IsTouchingTop(Player player1, Player player2)
         {
-            return player1.BoundingBox.Bottom > player2.BoundingBox.Top &&
+            return player1.BoundingBox.Bottom + player1._velocity.Y > player2.BoundingBox.Top &&
                    player1.BoundingBox.Top < player2.BoundingBox.Top &&
                    player1.BoundingBox.Right > player2.BoundingBox.Left &&
                    player1.BoundingBox.Left < player2.BoundingBox.Right;
@@ -320,7 +321,7 @@ namespace NetworkGameServer
 
         protected bool IsTouchingBottom(Player player1, Player player2)
         {
-            return player1.BoundingBox.Top < player2.BoundingBox.Bottom &&
+            return player1.BoundingBox.Top + player1._velocity.Y < player2.BoundingBox.Bottom &&
                    player1.BoundingBox.Bottom > player2.BoundingBox.Bottom &&
                    player1.BoundingBox.Right > player2.BoundingBox.Left &&
                    player1.BoundingBox.Left < player2.BoundingBox.Right;

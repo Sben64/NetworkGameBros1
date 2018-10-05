@@ -25,6 +25,7 @@ namespace NetworkGame.Manager
         private void CheckKeyState(Keys keys, KeyboardState state)
         {
             bool collided = false;
+            ManagerNetwork.Player._velocity = Vector2.Zero;
             if (state.IsKeyDown(keys))
             {
                 ManagerNetwork.SendInput(keys);
@@ -36,9 +37,9 @@ namespace NetworkGame.Manager
                         {
                             if (ManagerNetwork.Player != item)
                             {
-                                if (IsTouchingBottom(ManagerNetwork.Player, item) || IsTouchingTop(ManagerNetwork.Player, item))
+                                if (ManagerNetwork.Player._velocity.Y < 0 && IsTouchingBottom(ManagerNetwork.Player, item) || ManagerNetwork.Player._velocity.Y > 0 && IsTouchingTop(ManagerNetwork.Player, item))
                                 {
-                                    ManagerNetwork.Player._position.Y = 0f;
+                                    ManagerNetwork.Player._velocity.Y = 0f;
                                     collided = true;
                                     continue;
                                 }
@@ -46,7 +47,7 @@ namespace NetworkGame.Manager
                         }
                         if (!collided)
                         {
-                            ManagerNetwork.Player.yPosition++;
+                            ManagerNetwork.Player._velocity.Y += ManagerNetwork.Player.speed;
                         }
                         break;
                     case Keys.Up:
@@ -54,9 +55,9 @@ namespace NetworkGame.Manager
                         {
                             if (ManagerNetwork.Player != item)
                             {
-                                if (IsTouchingBottom(ManagerNetwork.Player, item) || IsTouchingTop(ManagerNetwork.Player, item))
+                                if (ManagerNetwork.Player._velocity.Y < 0 && IsTouchingBottom(ManagerNetwork.Player, item) || ManagerNetwork.Player._velocity.Y > 0 && IsTouchingTop(ManagerNetwork.Player, item))
                                 {
-                                    ManagerNetwork.Player._position.Y = 0f;
+                                    ManagerNetwork.Player._velocity.Y = 0f;
                                     collided = true;
                                     continue;
                                 }
@@ -64,7 +65,7 @@ namespace NetworkGame.Manager
                         }
                         if (!collided)
                         {
-                            ManagerNetwork.Player._position.Y--;
+                            ManagerNetwork.Player._velocity.Y -= ManagerNetwork.Player.speed;
                         }
 
                         break;
@@ -73,9 +74,9 @@ namespace NetworkGame.Manager
                         {
                             if (ManagerNetwork.Player != item)
                             {
-                                if (IsTouchingRight(ManagerNetwork.Player, item) || IsTouchingLeft(ManagerNetwork.Player, item))
+                                if (ManagerNetwork.Player._velocity.X < 0 && IsTouchingRight(ManagerNetwork.Player, item) || ManagerNetwork.Player._velocity.X > 0 && IsTouchingLeft(ManagerNetwork.Player, item))
                                 {
-                                    ManagerNetwork.Player._position.X = 0f;
+                                    ManagerNetwork.Player._velocity.X = 0f;
                                     collided = true;
                                     continue;
                                 }
@@ -83,7 +84,7 @@ namespace NetworkGame.Manager
                         }
                         if (!collided)
                         {
-                            ManagerNetwork.Player._position.X--;
+                            ManagerNetwork.Player._velocity.X -= ManagerNetwork.Player.speed;
                         }
                         break;
                     case Keys.Right:
@@ -91,9 +92,9 @@ namespace NetworkGame.Manager
                         {
                             if (ManagerNetwork.Player != item)
                             {
-                                if (IsTouchingLeft(ManagerNetwork.Player, item) || IsTouchingRight(ManagerNetwork.Player, item))
+                                if (ManagerNetwork.Player._velocity.Y > 0 && IsTouchingLeft(ManagerNetwork.Player, item) || ManagerNetwork.Player._velocity.X < 0 && IsTouchingRight(ManagerNetwork.Player, item))
                                 {
-                                    ManagerNetwork.Player._position.X = 0f;
+                                    ManagerNetwork.Player._velocity.X = 0f;
                                     collided = true;
                                     continue;
                                 }
@@ -101,17 +102,17 @@ namespace NetworkGame.Manager
                         }
                         if (!collided)
                         {
-                            ManagerNetwork.Player._position.X++;
+                            ManagerNetwork.Player._velocity.X += ManagerNetwork.Player.speed;
                         }
                         break;
                 }
-
+                ManagerNetwork.Player._position += ManagerNetwork.Player._velocity;
             }
         }
 
         protected bool IsTouchingLeft(Player player1, Player player2)
         {
-            return player1.BoundingBox.Right + 1 > player2.BoundingBox.Left &&
+            return player1.BoundingBox.Right + player1._velocity.X > player2.BoundingBox.Left &&
                    player1.BoundingBox.Left < player2.BoundingBox.Left &&
                    player1.BoundingBox.Bottom > player2.BoundingBox.Top &&
                    player1.BoundingBox.Top < player2.BoundingBox.Bottom;
@@ -119,7 +120,7 @@ namespace NetworkGame.Manager
 
         protected bool IsTouchingRight(Player player1, Player player2)
         {
-            return player1.BoundingBox.Left - 1 < player2.BoundingBox.Right &&
+            return player1.BoundingBox.Left + player1._velocity.X < player2.BoundingBox.Right &&
                    player1.BoundingBox.Right > player2.BoundingBox.Right &&
                    player1.BoundingBox.Bottom > player2.BoundingBox.Top &&
                    player1.BoundingBox.Top < player2.BoundingBox.Bottom;
@@ -127,7 +128,7 @@ namespace NetworkGame.Manager
 
         protected bool IsTouchingTop(Player player1, Player player2)
         {
-            return player1.BoundingBox.Bottom + 1 > player2.BoundingBox.Top &&
+            return player1.BoundingBox.Bottom + player1._velocity.Y > player2.BoundingBox.Top &&
                    player1.BoundingBox.Top < player2.BoundingBox.Top &&
                    player1.BoundingBox.Right > player2.BoundingBox.Left &&
                    player1.BoundingBox.Left < player2.BoundingBox.Right;
@@ -135,7 +136,7 @@ namespace NetworkGame.Manager
 
         protected bool IsTouchingBottom(Player player1, Player player2)
         {
-            return player1.BoundingBox.Top - 1 < player2.BoundingBox.Bottom &&
+            return player1.BoundingBox.Top + player1._velocity.Y < player2.BoundingBox.Bottom &&
                    player1.BoundingBox.Bottom > player2.BoundingBox.Bottom &&
                    player1.BoundingBox.Right > player2.BoundingBox.Left &&
                    player1.BoundingBox.Left < player2.BoundingBox.Right;

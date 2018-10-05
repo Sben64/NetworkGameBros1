@@ -13,7 +13,7 @@ namespace NetworkGameLibrary
         //public Texture2D _texture;       
         public Vector2 _position;
         public Vector2 _velocity;
-        public float speed = 50f;
+        public float speed = 5f;
         public Rectangle BoundingBox => new Rectangle(
             (int)xPosition,
             (int)yPosition,
