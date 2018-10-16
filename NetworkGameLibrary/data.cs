@@ -8,5 +8,6 @@
         NewPlayer,
         AllPlayers,
         Input,
+        UPDATEPosition
     }
 }

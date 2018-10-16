@@ -7,6 +7,7 @@ namespace NetworkGame.Manager
     class ManagerInput
     {
         private ManagerNetwork ManagerNetwork;
+        //private Platform _ground;
         public ManagerInput(ManagerNetwork manager)
         {
             ManagerNetwork = manager;
@@ -19,7 +20,6 @@ namespace NetworkGame.Manager
             CheckKeyState(Keys.Up, state);
             CheckKeyState(Keys.Left, state);
             CheckKeyState(Keys.Right, state);
-
         }
 
         private void CheckKeyState(Keys keys, KeyboardState state)
@@ -51,6 +51,12 @@ namespace NetworkGame.Manager
                         }
                         break;
                     case Keys.Up:
+                        if (!collided)
+                        {
+                            GameTime gameTime = new GameTime();
+                            ManagerNetwork.Player._velocity.Y -= ManagerNetwork.Player.jumpSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                            ManagerNetwork.Player._inAir = true;
+                        }
                         foreach (var item in ManagerNetwork.OtherPlayers)
                         {
                             if (ManagerNetwork.Player != item)
@@ -63,13 +69,13 @@ namespace NetworkGame.Manager
                                 }
                             }
                         }
-                        if (!collided)
-                        {
-                            ManagerNetwork.Player._velocity.Y -= ManagerNetwork.Player.speed;
-                        }
 
                         break;
                     case Keys.Left:
+                        if (!collided)
+                        {
+                            ManagerNetwork.Player._velocity.X -= ManagerNetwork.Player.speed;
+                        }
                         foreach (var item in ManagerNetwork.OtherPlayers)
                         {
                             if (ManagerNetwork.Player != item)
@@ -82,12 +88,12 @@ namespace NetworkGame.Manager
                                 }
                             }
                         }
-                        if (!collided)
-                        {
-                            ManagerNetwork.Player._velocity.X -= ManagerNetwork.Player.speed;
-                        }
                         break;
                     case Keys.Right:
+                        if (!collided)
+                        {
+                            ManagerNetwork.Player._velocity.X += ManagerNetwork.Player.speed;
+                        }
                         foreach (var item in ManagerNetwork.OtherPlayers)
                         {
                             if (ManagerNetwork.Player != item)
@@ -100,13 +106,10 @@ namespace NetworkGame.Manager
                                 }
                             }
                         }
-                        if (!collided)
-                        {
-                            ManagerNetwork.Player._velocity.X += ManagerNetwork.Player.speed;
-                        }
                         break;
                 }
                 ManagerNetwork.Player._position += ManagerNetwork.Player._velocity;
+                
             }
         }
 

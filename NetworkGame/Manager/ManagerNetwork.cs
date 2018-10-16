@@ -5,6 +5,7 @@ using Lidgren.Network;
 using Microsoft.Xna.Framework.Input;
 using NetworkGameLibrary;
 using NetworkGame.Manager;
+using Microsoft.Xna.Framework;
 
 namespace NetworkGame
 {
@@ -13,6 +14,7 @@ namespace NetworkGame
         private NetClient _client;
         public Player Player { get; set; }
         public List<Player> OtherPlayers { get; set; }
+        public Platform Ground;
         public static bool isConnected = false;
         public bool Active { get; set; }
 
@@ -38,6 +40,7 @@ namespace NetworkGame
             _client = new NetClient(config);
             _client.Start();
             Player = new Player("name_" + random.Next(0, 100), 0, 0);
+            //Ground = new Platform()
             var outmsg = _client.CreateMessage();
             outmsg.Write((byte)PacketType.Login);
             outmsg.Write(Player.Name);
@@ -131,6 +134,7 @@ namespace NetworkGame
                         {
                             Player._position.X = playerPos._position.X;
                             Player._position.Y = playerPos._position.Y;
+                            
                         }
                         else if(OtherPlayers.Count > 0)
                         {
@@ -145,10 +149,14 @@ namespace NetworkGame
                             }
                         }
                         break;
+                    case PacketType.UPDATEPosition:
+                        Fall();
+                        break;
 
                     default:
                         break;
                 }
+                //Fall();
             }
         }
 
@@ -190,6 +198,19 @@ namespace NetworkGame
             outmessage.Write((byte)keys);
             outmessage.Write(Player.Name);
             _client.SendMessage(outmessage, NetDeliveryMethod.ReliableOrdered);
+        }
+        private void Fall()
+        {
+            if (OtherPlayers.Count > 0)
+            {
+                foreach (var player in OtherPlayers)
+                {
+                    if (player._inAir == true)
+                    {
+                        player._velocity.Y += 10f;
+                    }
+                }
+            }
         }
     }
 }

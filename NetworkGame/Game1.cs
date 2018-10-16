@@ -80,6 +80,7 @@ namespace NetworkGame
             // TODO: Add your update logic here            
             _networkConnection.Update();
             _input.Update();
+
             base.Update(gameTime);
         }
 

@@ -13,6 +13,7 @@ namespace NetworkGameServer
         private NetPeerConfiguration _config;
         private List<NetConnection> connectedClients;
         private NetPeer _netPeer;
+        private GameTime _gametime = new GameTime();
         public Server()
         {
             _players = new List<Player>();
@@ -64,6 +65,7 @@ namespace NetworkGameServer
                             }
                             else if (type == (byte)PacketType.Input)
                             {
+
                                 Inputs(inc);
                             }
                             break;
@@ -94,7 +96,7 @@ namespace NetworkGameServer
 
 
                 }
-
+                Fall();
             }
         }
 
@@ -203,14 +205,19 @@ namespace NetworkGameServer
             bool collided = false;
             player = _players.Find(x => x.connection == inc.SenderConnection);
             player._velocity = Vector2.Zero;
+
             switch (key)
             {
                 case Keys.Down:
+                    if (!collided || _players.Count == 1)
+                    {
+                        player._velocity.Y += player.speed;
+                    }
                     foreach (var item in _players)
                     {
                         if (player != item)
                         {
-                            if (player._velocity.Y > 0 && IsTouchingBottom(player, item) || player._velocity.Y > 0 && IsTouchingTop(player, item))
+                            if (player._velocity.Y < 0 && IsTouchingBottom(player, item) || player._velocity.Y > 0 && IsTouchingTop(player, item))
                             {
                                 Console.WriteLine(IsTouchingBottom(player, item) + " : " + IsTouchingTop(player, item));
                                 collided = true;
@@ -219,20 +226,17 @@ namespace NetworkGameServer
                             }
                         }
 
-                    }
-                    if (!collided || _players.Count == 1)
-                    {
-                        player._velocity.Y += player.speed;
                     }
 
                     break;
 
                 case Keys.Up:
+
                     foreach (var item in _players)
                     {
                         if (player != item)
                         {
-                            if (player._velocity.Y > 0 && IsTouchingBottom(player, item) || player._velocity.Y > 0 && IsTouchingTop(player, item))
+                            if (player._velocity.Y < 0 && IsTouchingBottom(player, item) || player._velocity.Y > 0 && IsTouchingTop(player, item))
                             {
                                 Console.WriteLine(IsTouchingBottom(player, item) + " : " + IsTouchingTop(player, item));
                                 collided = true;
@@ -242,13 +246,14 @@ namespace NetworkGameServer
                         }
 
                     }
-                    if (!collided || _players.Count == 1)
-                    {
-                        player._velocity.Y -= player.speed;
-                    }
+
                     break;
 
                 case Keys.Left:
+                    if (!collided || _players.Count == 1)
+                    {
+                        player._velocity.X -= player.speed;
+                    }
                     foreach (var item in _players)
                     {
                         if (player != item)
@@ -262,10 +267,6 @@ namespace NetworkGameServer
                             }
                         }
                     }
-                    if (!collided || _players.Count == 1)
-                    {
-                        player._velocity.X -= player.speed;
-                    }
 
                     break;
                 case Keys.Right:
@@ -274,7 +275,7 @@ namespace NetworkGameServer
                     {
                         if (player != item)
                         {
-                            if (player._velocity.X >0 && IsTouchingLeft(player, item) || player._velocity.X < 0 && IsTouchingRight(player, item))
+                            if (player._velocity.X > 0 && IsTouchingLeft(player, item) || player._velocity.X < 0 && IsTouchingRight(player, item))
                             {
                                 Console.WriteLine(IsTouchingRight(player, item) + " : " + IsTouchingLeft(player, item));
                                 collided = true;
@@ -283,15 +284,28 @@ namespace NetworkGameServer
                             }
                         }
                     }
-                        
-                    
-
+                    break;
+                default:
+                   
                     break;
             }
+
             player._position += player._velocity;
             SendNewPosition(player, inc);
         }
-
+        private void Fall()
+        {
+            if (_players.Count > 0)
+            {
+                foreach (var player in _players)
+                {
+                    if (player._inAir == true)
+                    {
+                        player._velocity.Y += 10f * 1f;
+                    }
+                }
+            }
+        }
         // NICO :
         // IsTouchingLeft et IsTouchingRight donnent le même résultat
         // Probablement Down et Up
